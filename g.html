@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalAccount - 全球账号购买平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta name="description" content="专业海外账号购买平台 - Netflix, Spotify, Disney+, ChatGPT, 游戏账号等一站式服务">
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .product-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .product-card:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15); }
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
+        }
+        .nav-link { position: relative; }
+        .nav-link:after {
+            content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+            background: #2563eb; transition: all 0.3s;
+        }
+        .nav-link:hover:after { width: 100%; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-bold">G</div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">GlobalAccount</h1>
+                    <p class="text-xs text-gray-500 -mt-1">全球账号 · 安全快捷</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8 text-base">
+                <a href="#" onclick="navigateTo('home')" class="nav-link font-medium text-gray-700 hover:text-blue-600">首页</a>
+                <a href="#shop" onclick="navigateTo('shop')" class="nav-link font-medium text-gray-700 hover:text-blue-600">账号商城</a>
+                <a href="#about" onclick="navigateTo('about')" class="nav-link font-medium text-gray-700 hover:text-blue-600">关于我们</a>
+                <a href="#faq" onclick="navigateTo('faq')" class="nav-link font-medium text-gray-700 hover:text-blue-600">帮助中心</a>
+            </div>
+
+            <div class="flex items-center gap-5">
+                <div class="relative w-72 hidden md:block">
+                    <input id="search-input" 
+                           onkeyup="if(event.key === 'Enter') searchProducts()"
+                           type="text" 
+                           placeholder="搜索账号 (Netflix, Spotify...)" 
+                           class="w-full pl-12 py-3 bg-gray-100 rounded-3xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-3.5 text-gray-400"></i>
+                </div>
+                
+                <button onclick="toggleCart()" class="relative p-3 hover:bg-gray-100 rounded-3xl">
+                    <i class="fa-solid fa-cart-shopping text-2xl"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full">0</span>
+                </button>
+                
+                <button onclick="showLogin()" 
+                        class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-3 rounded-3xl font-semibold hover:brightness-110 transition">
+                    登录 / 注册
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header id="home" class="hero-bg text-white py-32 md:py-48 text-center">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-5 py-2 rounded-3xl mb-6">
+                <span class="text-green-400">●</span>
+                <span class="text-sm tracking-widest">已服务 128,459 名用户</span>
+            </div>
+            <h1 class="text-6xl md:text-7xl font-bold mb-6 leading-tight">全球顶级账号<br>安全 · 快速 · 可靠</h1>
+            <p class="text-2xl md:text-3xl text-white/90 mb-10">Netflix · Spotify · Disney+ · ChatGPT · 游戏账号 · 更多</p>
+            
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="navigateTo('shop')" 
+                        class="bg-white text-blue-700 px-12 py-5 rounded-3xl text-xl font-semibold hover:bg-gray-100 transition flex items-center gap-3">
+                    <i class="fa-solid fa-store"></i>
+                    立即购物
+                </button>
+                <button onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'})"
+                        class="border-2 border-white/80 px-10 py-5 rounded-3xl text-xl font-medium hover:bg-white/10 transition">
+                    了解更多
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 商城 -->
+    <section id="shop" class="max-w-7xl mx-auto px-6 py-16">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+            <h2 class="text-4xl font-bold">精选账号</h2>
+            
+            <div class="flex gap-3 mt-6 md:mt-0">
+                <select id="category-filter" onchange="filterProducts()" class="px-6 py-3 bg-white border border-gray-200 rounded-3xl focus:outline-none">
+                    <option value="">全部分类</option>
+                    <option value="影视">影视账号</option>
+                    <option value="音乐">音乐账号</option>
+                    <option value="AI">AI账号</option>
+                    <option value="游戏">游戏账号</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- JS 动态生成 -->
+        </div>
+    </section>
+
+    <!-- 信任标志 -->
+    <div class="bg-white py-8 border-t border-b">
+        <div class="max-w-7xl mx-auto px-6 flex flex-wrap justify-center items-center gap-12 opacity-75">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logonetflix.png" class="h-8" alt="Netflix">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" class="h-8" alt="Spotify">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" class="h-8" alt="Disney+">
+        </div>
+    </div>
+
+    <!-- 关于我们 -->
+    <section id="about" class="max-w-7xl mx-auto px-6 py-20 bg-white">
+        <div class="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="text-4xl font-bold mb-8">为什么选择 GlobalAccount？</h2>
+                <div class="space-y-10">
+                    <div class="flex gap-6">
+                        <div class="text-5xl">🔒</div>
+                        <div>
+                            <h4 class="font-semibold text-xl mb-2">账号安全</h4>
+                            <p class="text-gray-600">所有账号均经过验证，7天无理由退款</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="text-5xl">⚡</div>
+                        <div>
+                            <h4 class="font-semibold text-xl mb-2">即时交付</h4>
+                            <p class="text-gray-600">支付后秒速自动发货</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="text-5xl">🛡️</div>
+                        <div>
+                            <h4 class="font-semibold text-xl mb-2">终身客服</h4>
+                            <p class="text-gray-600">24小时在线支持</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-100 rounded-3xl p-10 text-center">
+                <div class="text-6xl font-bold text-blue-600 mb-2">128k+</div>
+                <p class="text-xl">用户信任我们</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="max-w-4xl mx-auto px-6 py-20">
+        <h2 class="text-4xl font-bold text-center mb-12">常见问题</h2>
+        <div class="space-y-6">
+            <div class="bg-white p-8 rounded-3xl">
+                <h4 class="font-semibold text-lg">账号多久能收到？</h4>
+                <p class="mt-3 text-gray-600">支付成功后立即自动发送至您的邮箱或站内消息。</p>
+            </div>
+            <div class="bg-white p-8 rounded-3xl">
+                <h4 class="font-semibold text-lg">支持哪些支付方式？</h4>
+                <p class="mt-3 text-gray-600">支付宝、微信支付、PayPal、USDT 等。</p>
+            </div>
+            <div class="bg-white p-8 rounded-3xl">
+                <h4 class="font-semibold text-lg">账号出现问题怎么办？</h4>
+                <p class="mt-3 text-gray-600">7天内免费换新或全额退款。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-16">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+            <div>
+                <div class="flex items-center gap-3 text-white mb-6">
+                    <div class="w-9 h-9 bg-blue-600 rounded-2xl flex items-center justify-center text-2xl">G</div>
+                    <span class="font-bold text-2xl">GlobalAccount</span>
+                </div>
+                <p class="text-sm">专业海外数字账号交易平台</p>
+            </div>
+            <div>
+                <h4 class="font-semibold text-white mb-4">快速导航</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#shop" class="hover:text-white">账号商城</a></li>
+                    <li><a href="#" class="hover:text-white">热销榜单</a></li>
+                    <li><a href="#" class="hover:text-white">新品推荐</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-white mb-4">支持</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white">帮助中心</a></li>
+                    <li><a href="#" class="hover:text-white">售后服务</a></li>
+                    <li><a href="#" class="hover:text-white">联系客服</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-semibold text-white mb-4">安全保障</h4>
+                <p class="text-xs leading-relaxed">SSL 加密传输<br>7天无理由退款<br>账号实名验证</p>
+            </div>
+        </div>
+        <div class="text-center text-xs mt-16 opacity-60">
+            © 2026 GlobalAccount Demo. 此为完整演示模板，可直接部署。
+        </div>
+    </footer>
+
+    <!-- 购物车侧边栏 -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white shadow-2xl translate-x-full transition-transform duration-300 z-[100] overflow-auto">
+        <div class="p-6 border-b flex justify-between sticky top-0 bg-white z-10">
+            <h3 class="text-2xl font-bold">我的购物车</h3>
+            <button onclick="toggleCart()" class="text-4xl leading-none text-gray-400 hover:text-gray-600">×</button>
+        </div>
+        
+        <div id="cart-items" class="p-6"></div>
+        
+        <div class="p-6 border-t sticky bottom-0 bg-white">
+            <div class="flex justify-between text-2xl font-bold mb-6">
+                <span>合计</span>
+                <span id="cart-total">¥0</span>
+            </div>
+            <button onclick="checkout()" 
+                    class="w-full py-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xl font-semibold rounded-3xl hover:brightness-110">
+                立即支付
+            </button>
+        </div>
+    </div>
+
+    <!-- 登录弹窗 -->
+    <div id="login-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-[200]">
+        <div class="bg-white rounded-3xl max-w-md w-full mx-4 p-10">
+            <h3 class="text-3xl font-bold mb-8 text-center">欢迎回来</h3>
+            <input type="text" placeholder="邮箱 / 手机号" class="w-full px-6 py-5 border rounded-3xl mb-4">
+            <input type="password" placeholder="密码" class="w-full px-6 py-5 border rounded-3xl mb-8">
+            <button onclick="fakeLogin()" class="w-full py-5 bg-blue-600 text-white rounded-3xl text-lg font-medium">登录</button>
+            <p class="text-center text-sm text-gray-500 mt-6">演示站点 - 点击任意位置关闭</p>
+        </div>
+    </div>
+
+    <script>
+        // 商品数据（可继续扩展）
+        let products = [
+            {id:1, name:"Netflix Premium 4K共享", price:89, category:"影视", image:"https://picsum.photos/id/201/600/400", desc:"4K HDR · 同时4屏 · 稳定耐用"},
+            {id:2, name:"Spotify Premium 家庭组", price:49, category:"音乐", image:"https://picsum.photos/id/237/600/400", desc:"6人共享 · 无广告 · 高音质"},
+            {id:3, name:"Disney+ Hotstar VIP", price:69, category:"影视", image:"https://picsum.photos/id/180/600/400", desc:"印度区 · 超多独家内容"},
+            {id:4, name:"ChatGPT-4o Plus", price:139, category:"AI", image:"https://picsum.photos/id/1015/600/400", desc:"无限使用 · 新号稳定"},
+            {id:5, name:"YouTube Premium 家庭", price:59, category:"影视", image:"https://picsum.photos/id/251/600/400", desc:"无广告 · 背景播放"},
+            {id:6, name:"Midjourney 高级订阅", price:169, category:"AI", image:"https://picsum.photos/id/133/600/400", desc:"V6.1 极速模式"},
+            {id:7, name:"Valorant 高段位账号", price:299, category:"游戏", image:"https://picsum.photos/id/201/600/400", desc:"Radiant 段位"},
+        ];
+
+        let cart = [];
+        let currentFilter = "";
+
+        function renderProducts(filteredProducts) {
+            const container = document.getElementById('product-list');
+            container.innerHTML = '';
+            
+            filteredProducts.forEach(p => {
+                const cardHTML = `
+                    <div class="product-card bg-white rounded-3xl overflow-hidden border">
+                        <img src="${p.image}" class="w-full h-52 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between mb-3">
+                                <span class="text-xs px-4 py-1.5 bg-blue-100 text-blue-700 rounded-3xl">${p.category}</span>
+                                <span class="text-3xl font-bold">¥${p.price}</span>
+                            </div>
+                            <h4 class="font-bold text-xl mb-2">${p.name}</h4>
+                            <p class="text-gray-500 text-sm mb-6 line-clamp-2">${p.desc}</p>
+                            <div class="flex gap-3">
+                                <button onclick="viewDetail(${p.id})" class="flex-1 py-4 border border-gray-300 rounded-3xl hover:bg-gray-50 font-medium">查看</button>
+                                <button onclick="addToCart(${p.id});" class="flex-1 py-4 bg-blue-600 text-white rounded-3xl hover:bg-blue-700 font-medium">加入购物车</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        function filterProducts() {
+            const category = document.getElementById('category-filter').value;
+            const filtered = category ? products.filter(p => p.category === category) : products;
+            renderProducts(filtered);
+        }
+
+        function searchProducts() {
+            const term = document.getElementById('search-input').value.toLowerCase().trim();
+            if (!term) {
+                renderProducts(products);
+                return;
+            }
+            const results = products.filter(p => 
+                p.name.toLowerCase().includes(term) || 
+                p.desc.toLowerCase().includes(term)
+            );
+            renderProducts(results);
+        }
+
+        function viewDetail(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            alert(`商品详情：\n\n\( {product.name}\n价格：¥ \){product.price}\n描述：${product.desc}\n\n（演示站点 - 实际项目可弹出精美模态框）`);
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            document.getElementById('cart-count').textContent = cart.length;
+            
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#10b981; color:white; padding:16px 32px; border-radius:9999px; z-index:9999; box-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1);';
+            toast.textContent = `✅ 已添加 ${product.name}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 1600);
+        }
+
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            if (sidebar.classList.contains('translate-x-full')) {
+                renderCart();
+                sidebar.classList.remove('translate-x-full');
+            } else {
+                sidebar.classList.add('translate-x-full');
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let total = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-center py-20 text-gray-400">购物车为空，快去挑选商品吧～</p>`;
+                document.getElementById('cart-total').textContent = '¥0';
+                return;
+            }
+
+            cart.forEach((item, i) => {
+                total += item.price;
+                container.innerHTML += `
+                    <div class="flex gap-4 mb-8">
+                        <img src="${item.image}" class="w-20 h-20 object-cover rounded-2xl">
+                        <div class="flex-1">
+                            <div class="font-semibold">${item.name}</div>
+                            <div class="text-blue-600 font-bold mt-1">¥${item.price}</div>
+                        </div>
+                        <button onclick="removeFromCart(${i});" class="text-red-400 hover:text-red-600 self-start">删除</button>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('cart-total').textContent = `¥${total}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderCart();
+            document.getElementById('cart-count').textContent = cart.length;
+        }
+
+        function checkout() {
+            if (cart.length === 0) return;
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            if (confirm(`确认支付 ¥${total} ？\n\n（演示站点 - 实际可接入支付宝/微信）`)) {
+                alert('🎉 支付成功！账号已发送至您的邮箱。');
+                cart = [];
+                document.getElementById('cart-count').textContent = '0';
+                toggleCart();
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+        }
+
+        function fakeLogin() {
+            alert("✅ 登录成功！（演示账号）");
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+        }
+
+        function navigateTo(section) {
+            if (section === 'shop') {
+                document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+            } else if (section === 'about') {
+                document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+            } else if (section === 'faq') {
+                document.getElementById('faq').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 初始化
+        window.onload = () => {
+            renderProducts(products);
+        };
+    </script>
+</body>
+</html>
